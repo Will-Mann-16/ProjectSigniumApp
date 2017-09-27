@@ -1,0 +1,64 @@
+const initialState = {
+  fetching: false,
+  fetched: false,
+  error: null,
+  authenticated: false,
+  student: {},
+  locations: []
+}
+export default function reducer(state = initialState, action){
+  switch(action.type){
+    case "AUTHENTICATE_STUDENT":
+      return {...state, fetching: true, fetched: false};
+    case "AUTHENTICATE_STUDENT_FULFILLED":
+      return {...state, fetching: false, fetched: true};
+    case "AUTHENTICATE_STUDENT_DENIED":
+      return {...state, fetching: false, fetched: true};
+    case "AUTHENTICATE_STUDENT_REJECTED":
+      return {...state, fetching: false, error: action.payload};
+
+      case "READ_STUDENT":
+      return {...state, fetching: true, fetched: false};
+    case "READ_STUDENT_FULFILLED":
+      return {...state, fetching: false, fetched: true, student: action.payload.data, authenticated: true};
+    case "READ_STUDENT_EMPTY":
+      return {...state, fetching: false, fetched: true, student: {}, authenticated: false};
+    case "READ_STUDENT_REJECTED":
+      return {...state, fetching: false, fetched: true, error: action.payload};
+
+    case "READ_STUDENT_MAJOR":
+      return {...state, fetching: true, fetched: false};
+    case "READ_STUDENT_MAJOR_REJECTED":
+      return {...state, fetching: false, error: action.payload};
+    case "READ_STUDENT_MAJOR_FULFILLED":
+      return {...state, fetching: false, fetched: true, student: action.payload};
+
+    case "READ_STUDENT_MINOR":
+      return {...state, fetching: true, fetched: false};
+    case "READ_STUDENT_MINOR_REJECTED":
+      return {...state, fetching: false, error: action.payload};
+    case "READ_STUDENT_MINOR_FULFILLED":
+      var newStudent = action.payload;
+      var student = Object.assign({}, state).student;
+      student.location = newStudent.location;
+      student.timelastout = newStudent.timelastout;
+      return {...state, fetching: false, fetched: true, student: student};
+
+    case "READ_LOCATIONS":
+      return {...state, fetching: true, fetched: false};
+    case "READ_LOCATIONS_REJECTED":
+      return {...state, fetching: false, error: action.payload};
+    case "READ_LOCATIONS_FULFILLED":
+      return {...state, fetching: false, fetched: true, locations: action.payload};
+
+    case "UPDATE_STUDENT_LOCATION":
+      return {...state, fetching: true, fetched: false};
+    case "UPDATE_STUDENT_LOCATION_REJECTED":
+      return {...state, fetching: false, error: action.payload};
+    case "UPDATE_STUDENT_LOCATION_FULFILLED":
+      return {...state, fetching: false, fetched: true, student: action.payload};
+
+    default:
+      return state;
+  }
+}
