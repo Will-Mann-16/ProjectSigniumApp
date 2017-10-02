@@ -1,33 +1,30 @@
 import React from "react";
-import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
+import { Text, TouchableOpacity, View, StyleSheet, Button } from "react-native";
 import { connect } from "react-redux";
-import { NavigationActions, DrawerNavigator } from "react-navigation";
-import LocationsList from "./LocationsList";
 import StudentCard from "./StudentCard";
-import Drawer from 'react-native-drawer';
+import {logout} from "../actions/appActions"
+
 
 class HomeScreen extends React.Component{
   static navigationOptions = {
     title: "Home",
     gesturesEnabled: false
   }
-
   openNavigator(){
-    this._drawer.open();
+    this.props.navigation.navigate("Locations");
+  }
+  logout(){
+      this.props.dispatch(logout());
   }
   render(){
-    if(!this.props.app.authenticated) {
-        return null;
-    }
     return(
-        <Drawer type="overlay" tapToClose={true} ref={(ref) => this._drawer = ref} content={<LocationsList/>}>
           <View style={styles.container}>
+              <TouchableOpacity style={styles.logoutButton} onPress={this.logout.bind(this)}><Text style={{color: "white", fontWeight: "bold", textAlign: "center"}}>LOGOUT</Text></TouchableOpacity>
             <StudentCard student={this.props.app.student} />
             <TouchableOpacity style={styles.button} onPress={this.openNavigator.bind(this)}>
                 <Text style={styles.buttonText}>LOCATIONS</Text>
             </TouchableOpacity>
           </View>
-        </Drawer>
     );
   }
 }
@@ -51,6 +48,11 @@ const styles = StyleSheet.create({
     buttonText:{
         color: "white",
         fontWeight: "400"
+    },
+    logoutButton:{
+      alignSelf: "stretch",
+        padding: 10,
+        backgroundColor: "red",
     }
 });
 

@@ -1,19 +1,24 @@
 import React from "react"
 import {connect} from "react-redux"
-import { SectionList, Text, StyleSheet } from "react-native"
+import { SectionList, Text, StyleSheet, TouchableOpacity } from "react-native"
 import * as appActions from "../actions/appActions"
 
 class LocationsList extends React.Component{
+  static navigationOptions = {
+    title: "Select Location",
+      gesturesEnabled: true,
+      mode: "modal"
+  }
   updateLocation(location){
-
+    this.props.dispatch(appActions.updateLocation(this.props.app.student._id, location));
+    this.props.navigation.goBack();
   }
   refreshData(){
     this.props.dispatch(appActions.fetchLocations(this.props.app.student._house))
   }
   render(){
     var locationItem = ({item}) =>{
-      var style = StyleSheet.flatten(styles.locationButton, {backgroundColor: item.colour});
-      return (<Text style={style}>{item.name}</Text>)
+        return (<TouchableOpacity style={[styles.locationButton, {backgroundColor: item.colour}]} onPress={this.updateLocation.bind(this, item._id)}><Text style={styles.locationText}>{item.name}</Text></TouchableOpacity>)
     }
     var locationHeader = ({section}) => {
       return section.key !== "" ? (<Text style={styles.locationHeader}>{section.key}</Text>) : null
@@ -47,11 +52,15 @@ var styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   locationButton:{
-    textAlign: "center",
-    padding: 10,
     flex: 1,
-    color: "white"
-  }
+      alignItems: "center",
+      alignSelf: "stretch",
+      padding: 20
+  },
+    locationText:{
+      color: "white",
+        fontWeight: "bold"
+    }
 });
 
 function mapStateToProps(state){

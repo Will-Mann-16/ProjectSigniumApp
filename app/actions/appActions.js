@@ -1,4 +1,4 @@
-import { emit, on } from "../socket";
+import { emit, on, disconnect } from "../socket";
 import { AsyncStorage } from "react-native";
 
 const SOCKET_AUTHENTICATE_SEND = "socket-client-server-app-authenticate";
@@ -13,6 +13,7 @@ const SOCKET_READ_LOCATIONS_SEND = "socket-client-server-app-read-locations";
 const SOCKET_READ_LOCATIONS_RECEIVE = "socket-server-client-app-read-locations";
 const SOCKET_UPDATE_LOCATION_SEND = "socket-client-server-app-update-location";
 const SOCKET_UPDATE_LOCATION_RECEIVE = "socket-server-client-app-update-location";
+const SOCKET_REDRAW_MINOR = "socket-client-server-redraw-minor";
 
 
 export function authenticateStudent(username, password){
@@ -124,10 +125,26 @@ export function updateLocation(studentID, locationID){
     on(SOCKET_UPDATE_LOCATION_RECEIVE, (response) => {
       if(response.success){
         dispatch({type: "UPDATE_LOCATION_FULFILLED", payload: response.student});
+        emit(SOCKET_REDRAW_MINOR);
       }
       else{
         dispatch({type: "UPDATE_LOCATION_REJECTED", payload: response.reason})
       }
     })
+  }
+}
+
+
+export function logout(){
+  return dispatch => {
+    dispatch({type: "LOGOUT_STUDENT"});
+      try {
+          AsyncStorage.removeItem('@RIDGE:auth_token', () => {
+            disconnect();
+              dispatch({type: "LOGOUT_STUDENT_FULFILLED", payload: true});
+          });
+      } catch (error) {
+          dispatch({type: "LOGOUT_STUDENT_REJECTED", payload: error});
+      }
   }
 }

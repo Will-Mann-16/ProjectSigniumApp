@@ -1,29 +1,49 @@
 import React from "react";
 import { connect } from "react-redux";
-import { AppNavigator } from "../navigators/AppNavigator";
-import { View, Text, StyleSheet } from "react-native";
-import * as appActions from "../actions/appActions";
+import { View, Text, StyleSheet, StatusBar, ActivityIndicator } from "react-native";
+import {readStudent, readStudentMajor, readLocations} from "../actions/appActions";
 import {activateListener} from "../socket";
 import LoginScreen from "./LoginScreen";
+import { AppNavigator } from "../navigators/AppNavigator";
 
-
+const LoadingScreen = (props) => {
+    return (<View style={styles.loadingScreen}>
+        <Text style={styles.loadingText}>Welcome To RIDGE</Text>
+        <Text>{props.loading ? "Connecting" : "Connected"}</Text>
+        <Text>{props.auth ? "Authenticated" : "Not Authenticated"}</Text>
+        <ActivityIndicator animating size='large'/>
+    </View>);
+};
 
 class AppLayout extends React.Component{
-  componentWillMount(){
-      this.props.dispatch(appActions.readStudent());
-  }
+    constructor(props){
+        super(props);
+        this.state = {
+            loading: true,
+            auth: false
+        }
+    }
+    componentWillReceiveProps(newProps){
+        if(newProps.app.authenticated && !this.state.auth){
+            this.props.dispatch(readStudentMajor(newProps.app.student._id));
+            this.props.dispatch(readLocations(newProps.app.student._house));
+            activateListener(this.props.dispatch, newProps.app.student._house, newProps.app.student._id);
+            this.setState({...this.state, auth: true, loading: false});
+        }
+        else if(!newProps.app.authenticated && this.state.auth){
+            this.setState({...this.state, auth: false});
+        }
+    }
+    componentDidMount(){
+        StatusBar.setHidden(true);
+    }
   render(){
-      const LoadingScreen = () => {
-          return (<View style={styles.loadingScreen}><Text style={styles.loadingText}>Welcome To RIDGE</Text></View>)
-      };
-      if(this.props.app.fetching){
-          return (<LoadingScreen/>)
+
+      if(this.props.app.fetching && !this.state.auth){
+          return (<LoadingScreen auth={this.state.auth} loading={this.state.loading} />);
       }
       else if(this.props.app.authenticated){
-          this.props.dispatch(appActions.readStudentMajor(this.props.app.student._id));
-          this.props.dispatch(appActions.readLocations(this.props.app.student._house));
-          activateListener(this.props.dispatch, this.props.app.student._house, this.props.app.student._id);
-          return (<AppLayout/>)
+          return (<AppNavigator/>)
       }
       else if(this.props.app.fetched){
           return (<LoginScreen/>);

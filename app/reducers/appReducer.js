@@ -5,7 +5,7 @@ const initialState = {
   authenticated: false,
   student: {},
   locations: []
-}
+};
 export default function reducer(state = initialState, action){
   switch(action.type){
     case "AUTHENTICATE_STUDENT":
@@ -51,12 +51,20 @@ export default function reducer(state = initialState, action){
     case "READ_LOCATIONS_FULFILLED":
       return {...state, fetching: false, fetched: true, locations: action.payload};
 
-    case "UPDATE_STUDENT_LOCATION":
+    case "UPDATE_LOCATION":
       return {...state, fetching: true, fetched: false};
-    case "UPDATE_STUDENT_LOCATION_REJECTED":
+    case "UPDATE_LOCATION_REJECTED":
       return {...state, fetching: false, error: action.payload};
-    case "UPDATE_STUDENT_LOCATION_FULFILLED":
+    case "UPDATE_LOCATION_FULFILLED":
       return {...state, fetching: false, fetched: true, student: action.payload};
+
+      case "LOGOUT_STUDENT":
+          return {...state, fetching: true, fetched: false};
+      case "LOGOUT_STUDENT_REJECTED":
+          return {...state, fetching: false, error: action.payload};
+      case "LOGOUT_STUDENT_FULFILLED":
+          return {...initialState, fetched: true};
+
 
     default:
       return state;

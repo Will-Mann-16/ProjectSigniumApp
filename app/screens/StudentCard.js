@@ -7,10 +7,10 @@ export default class StudentCard extends React.Component{
     var style = StyleSheet.flatten([styles.container, {borderColor: this.props.student.location.colour}])
     return(
       <View style={style}>
-        <Text>{timelastout.toLocaleTimeString()}</Text>
-        <Text>{timelastout.toLocaleDateString()}</Text>
-        <Text>{this.props.student.firstname} {this.props.student.surname}</Text>
-        <Text>{this.props.student.location.name}</Text>
+        <View style={styles.dateTimeContainer}><Text style={styles.dateTimeText}>{timelastout.toLocaleTimeString()}</Text>
+          <Text style={styles.dateTimeText}>{timelastout.toLocaleDateString()}</Text></View>
+        <Text style={styles.nameText}>{this.props.student.firstname} {this.props.student.surname}</Text>
+        <Text style={styles.locationText}>{this.props.student.location.name}</Text>
       </View>
     )
   }
@@ -20,11 +20,34 @@ var styles = StyleSheet.create({
   container: {
     borderWidth: 10,
     backgroundColor: "#FFFFFF",
-    flex: 1,
+      flex: 1,
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      alignItems: 'center',
     padding: 10,
       margin: 40,
-      alignItems: 'center',
-      justifyContent: 'center',
       alignSelf: "stretch"
-  }
+  },
+    dateTimeContainer:{
+        alignSelf: "stretch"
+    },
+    dateTimeText:{
+        textAlign: "center",
+        fontSize: 20,
+        fontWeight: "400",
+        color: "gray"
+    },
+    nameText:{
+        textAlign: "center",
+        alignSelf: "stretch",
+        fontSize: 40,
+        fontWeight: "400"
+    },
+    locationText: {
+        textAlign: "center",
+        alignSelf: "auto",
+        fontSize: 20,
+        fontWeight: "400",
+        color: "gray"
+    }
 })
