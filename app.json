@@ -1,5 +1,14 @@
 {
   "expo": {
-    "sdkVersion": "20.0.0"
-  }
+    "sdkVersion": "20.0.0",
+    "name": "RIDGE Student",
+    "slug": "ridge-student",
+    "privacy": "private",
+    "icon": "./Logo.png",
+    "loading": {
+      "icon": "./Logo.png"
+    }
+  },
+  "name": "ProjectSigniumApp",
+  "displayName": "RIDGE Student"
 }
