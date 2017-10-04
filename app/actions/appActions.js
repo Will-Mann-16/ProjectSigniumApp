@@ -125,7 +125,6 @@ export function updateLocation(studentID, locationID){
     on(SOCKET_UPDATE_LOCATION_RECEIVE, (response) => {
       if(response.success){
         dispatch({type: "UPDATE_LOCATION_FULFILLED", payload: response.student});
-        emit(SOCKET_REDRAW_MINOR);
       }
       else{
         dispatch({type: "UPDATE_LOCATION_REJECTED", payload: response.reason})
